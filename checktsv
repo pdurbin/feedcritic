@@ -1,0 +1,9 @@
+#!/bin/sh
+psql -v ON_ERROR_STOP=1 feedcritic -f feedcritic.sql
+if [ $? -eq 0 ]; then
+    echo OK
+else
+    echo FAIL
+    exit 1
+fi
+psql feedcritic -c 'select id,name,rating,every,dead from podcasts order by id, every desc nulls last, rating desc nulls last, id, name asc;'
