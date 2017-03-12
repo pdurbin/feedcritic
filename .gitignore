@@ -2,3 +2,4 @@ antennapod-feeds.opml
 *.xml
 files.json
 podcastdescriptions.json
+latest.json

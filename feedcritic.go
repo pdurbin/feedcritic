@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -77,6 +78,7 @@ func main() {
 		}
 		var filemap map[string]PodcastFromOpml
 		json.Unmarshal(file, &filemap)
+		var allEpisodes []Episode
 		for k, v := range filemap {
 			var podcast PodcastJson
 			filename := k
@@ -97,6 +99,13 @@ func main() {
 						if pubDate == "0001-01-01" {
 							pubDate = ParseDcDate(each.DcDate)
 						}
+						var episode Episode
+						episode.Title = each.Title
+						episode.PubDate = pubDate
+						episode.Link = each.Link
+						episode.Podcast = feed.Title
+						//episode.Description = each.Description
+						allEpisodes = append(allEpisodes, episode)
 						if pubDate > bigdate {
 							bigdate = pubDate
 						}
@@ -115,6 +124,11 @@ func main() {
 		jsonData2, _ := json.MarshalIndent(podmap, "", "  ")
 		//fmt.Println(string(jsonData2))
 		ioutil.WriteFile("podcastdescriptions.json", jsonData2, 0644)
+
+		sort.Sort(ByDate(allEpisodes))
+		allEpisodesAsJson, _ := json.MarshalIndent(allEpisodes, "", "  ")
+		ioutil.WriteFile("latest.json", allEpisodesAsJson, 0644)
+
 	}
 }
 
@@ -147,11 +161,11 @@ type Outline struct {
 	HTMLURL string `xml:"htmlUrl,attr"`
 }
 
-type ByTitle []PodcastJson
+type ByDate []Episode
 
-func (a ByTitle) Len() int           { return len(a) }
-func (a ByTitle) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByTitle) Less(i, j int) bool { return a[i].Title < a[j].Title }
+func (a ByDate) Len() int           { return len(a) }
+func (a ByDate) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByDate) Less(i, j int) bool { return a[i].PubDate > a[j].PubDate }
 
 // modified from https://github.com/siongui/userpages/blob/master/content/code/go-xml/parseFeed.go
 func parseFeedContent(content []byte) (Rss2, bool, error) {
@@ -196,6 +210,14 @@ type Item struct {
 	Content     template.HTML `xml:"encoded"`
 	PubDate     string        `xml:"pubDate"`
 	DcDate      string        `xml:"date"`
+}
+
+type Episode struct {
+	Title       string
+	Link        string
+	PubDate     string
+	Podcast     string
+	Description template.HTML
 }
 
 const atomErrStr = "expected element type <rss> but have <feed>"
