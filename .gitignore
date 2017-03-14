@@ -3,6 +3,6 @@ podcasts.tsv
 *.xml
 opml.json
 files.json
-podcastdescriptions.json
+details.json
 latest.json
 podcasts.json

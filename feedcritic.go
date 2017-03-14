@@ -23,32 +23,13 @@ func main() {
 	var mode = flag.Int("mode", 1, "Mode 1 downloads the feeds locally and mode 2 operates on locally downloaded files.")
 	flag.Parse()
 	var opmlFile = "antennapod-feeds.opml"
-	var opmlAsJsonFile = "opml.json"
+	//var opmlAsJsonFile = "opml.json"
 	var filesDownloaded = "files.json"
-	var fileDetails = "podcastdescriptions.json"
+	var fileDetails = "details.json"
 	var fileLatest = "latest.json"
 	var podcastsAsJsonFile = "podcasts.json"
 	var podcastsTsvFile = "podcasts.tsv"
 	// Based on the feeds in the OPML file, download each feed to 1.xml, 2.xml, etc.
-	if *mode == 0 {
-		bytes, _ := ioutil.ReadFile(opmlFile)
-		var doc OPML
-		xml.Unmarshal(bytes, &doc)
-		var count = 0
-		var allPodcasts []PodcastFromOpml
-		for _, outline := range doc.Body.Outlines {
-			count++
-			var podcast PodcastFromOpml
-			podcast.Title = outline.Title
-			podcast.Feed = outline.XMLURL
-			podcast.URL = outline.HTMLURL
-			allPodcasts = append(allPodcasts, podcast)
-
-		}
-		sort.Sort(ByTitle(allPodcasts))
-		jsonData2, _ := json.MarshalIndent(allPodcasts, "", "  ")
-		ioutil.WriteFile(opmlAsJsonFile, jsonData2, 0644)
-	}
 	if *mode == 1 {
 		bytes, _ := ioutil.ReadFile(opmlFile)
 		var doc OPML
