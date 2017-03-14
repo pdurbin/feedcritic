@@ -9,9 +9,7 @@ all:
 	make cleanxml
 	go run feedcritic.go -mode=1
 	go run feedcritic.go -mode=2
-	if [ $(TSV) != '' ]; then \ 
-		cp $(TSV) .;
-	fi
+	if [ $(TSV) != '' ]; then cp $(TSV) .; fi
 	go run feedcritic.go -mode=3
 	make deploy
 deploy:
