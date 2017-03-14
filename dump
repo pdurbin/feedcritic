@@ -1,0 +1,2 @@
+URL=http://localhost:8000
+phantomjs printSource.js $URL | elinks --dump --dump-width 999 -no-numbering -no-references

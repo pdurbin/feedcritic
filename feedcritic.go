@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"encoding/xml"
 	"flag"
@@ -21,10 +22,35 @@ func main() {
 
 	var mode = flag.Int("mode", 1, "Mode 1 downloads the feeds locally and mode 2 operates on locally downloaded files.")
 	flag.Parse()
+	var opmlFile = "antennapod-feeds.opml"
+	var opmlAsJsonFile = "opml.json"
 	var filesDownloaded = "files.json"
+	var fileDetails = "podcastdescriptions.json"
+	var fileLatest = "latest.json"
+	var podcastsAsJsonFile = "podcasts.json"
+	var podcastsTsvFile = "podcasts.tsv"
 	// Based on the feeds in the OPML file, download each feed to 1.xml, 2.xml, etc.
+	if *mode == 0 {
+		bytes, _ := ioutil.ReadFile(opmlFile)
+		var doc OPML
+		xml.Unmarshal(bytes, &doc)
+		var count = 0
+		var allPodcasts []PodcastFromOpml
+		for _, outline := range doc.Body.Outlines {
+			count++
+			var podcast PodcastFromOpml
+			podcast.Title = outline.Title
+			podcast.Feed = outline.XMLURL
+			podcast.URL = outline.HTMLURL
+			allPodcasts = append(allPodcasts, podcast)
+
+		}
+		sort.Sort(ByTitle(allPodcasts))
+		jsonData2, _ := json.MarshalIndent(allPodcasts, "", "  ")
+		ioutil.WriteFile(opmlAsJsonFile, jsonData2, 0644)
+	}
 	if *mode == 1 {
-		bytes, _ := ioutil.ReadFile("antennapod-feeds.opml")
+		bytes, _ := ioutil.ReadFile(opmlFile)
 		var doc OPML
 		xml.Unmarshal(bytes, &doc)
 		var podcast PodcastFromOpml
@@ -123,12 +149,66 @@ func main() {
 		}
 		jsonData2, _ := json.MarshalIndent(podmap, "", "  ")
 		//fmt.Println(string(jsonData2))
-		ioutil.WriteFile("podcastdescriptions.json", jsonData2, 0644)
+		ioutil.WriteFile(fileDetails, jsonData2, 0644)
 
 		sort.Sort(ByDate(allEpisodes))
 		allEpisodesAsJson, _ := json.MarshalIndent(allEpisodes, "", "  ")
-		ioutil.WriteFile("latest.json", allEpisodesAsJson, 0644)
+		ioutil.WriteFile(fileLatest, allEpisodesAsJson, 0644)
 
+	}
+	// Create podcasts.json which index.html and feedcritic.js will use to render information about the podcasts on an HTML page. If a podcasts.tsv file is present, we will supplement the information with fields such as rating, titleFromFeed, and dead.
+	if *mode == 3 {
+
+		var allPodcasts []PodcastJson
+		file, e := ioutil.ReadFile(fileDetails)
+		if e != nil {
+			fmt.Printf("File error: %v\n", e)
+			os.Exit(1)
+		}
+		var podmap map[string]PodcastJson
+		json.Unmarshal(file, &podmap)
+
+		csvFile, tsvOpenError := os.Open(podcastsTsvFile)
+		if tsvOpenError != nil {
+			//fmt.Printf("Could not %v ... but we'll get by without it.\n", tsvOpenError)
+			for _, v := range podmap {
+				// FIXME: sometimes there isn't a title
+				allPodcasts = append(allPodcasts, v)
+			}
+			sort.Sort(ByTheTitle(allPodcasts))
+			podcastsAsJsonData, _ := json.MarshalIndent(allPodcasts, "", "  ")
+			ioutil.WriteFile(podcastsAsJsonFile, podcastsAsJsonData, 0644)
+		} else {
+
+			defer csvFile.Close()
+
+			reader := csv.NewReader(csvFile)
+			reader.Comma = '\t'
+
+			reader.FieldsPerRecord = -1
+
+			_, _ = reader.Read() // delete header
+
+			csvData, err := reader.ReadAll()
+
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			var allPodcasts2 []PodcastJson
+			var podcast PodcastJson
+			for _, each := range csvData {
+				podcast.Title = each[4]
+				podcast.Feed = each[5]
+				podcast.Description = podmap[podcast.Feed].Description
+				podcast.URL = podmap[podcast.Feed].URL
+				podcast.Latest = podmap[podcast.Feed].Latest
+				allPodcasts2 = append(allPodcasts2, podcast)
+			}
+			podcastsAsJsonData, _ := json.MarshalIndent(allPodcasts2, "", "  ")
+			ioutil.WriteFile(podcastsAsJsonFile, podcastsAsJsonData, 0644)
+		}
 	}
 }
 
@@ -139,12 +219,24 @@ type PodcastFromOpml struct {
 }
 
 type PodcastJson struct {
-	Title       string
-	Feed        string
-	URL         string
-	Description string
+	Title       string `json:"title"`
+	Feed        string `json:"feed"`
+	URL         string `json:"url"`
+	Description string `json:"description"`
 	Filename    string
 	Latest      string
+	//Latest      string `json:"updated"`
+	/*
+	   "title": "Functional Geekery",
+	   "url": "",
+	   "description": "Functional Geeks, Geeking Functionally",
+	   "feed": "https://www.functionalgeekery.com/feed/mp3/",
+	   "updated": "2017-03-07",
+	   "titleFromFeed": "000 Functional Geekery",
+	   "rating": "5",
+	   "dead": "",
+	*/
+
 }
 
 type OPML struct {
@@ -166,6 +258,18 @@ type ByDate []Episode
 func (a ByDate) Len() int           { return len(a) }
 func (a ByDate) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByDate) Less(i, j int) bool { return a[i].PubDate > a[j].PubDate }
+
+type ByTitle []PodcastFromOpml
+
+func (a ByTitle) Len() int           { return len(a) }
+func (a ByTitle) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByTitle) Less(i, j int) bool { return a[i].Title < a[j].Title }
+
+type ByTheTitle []PodcastJson
+
+func (a ByTheTitle) Len() int           { return len(a) }
+func (a ByTheTitle) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByTheTitle) Less(i, j int) bool { return a[i].Title < a[j].Title }
 
 // modified from https://github.com/siongui/userpages/blob/master/content/code/go-xml/parseFeed.go
 func parseFeedContent(content []byte) (Rss2, bool, error) {

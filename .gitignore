@@ -1,5 +1,8 @@
 antennapod-feeds.opml
+podcasts.tsv
 *.xml
+opml.json
 files.json
 podcastdescriptions.json
 latest.json
+podcasts.json
