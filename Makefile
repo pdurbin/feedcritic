@@ -1,3 +1,4 @@
+TSV=''
 usage:
 	@echo "Run one of these:"
 	@echo " -'make all DIR=path/to/deploy'"
@@ -8,8 +9,9 @@ all:
 	make cleanxml
 	go run feedcritic.go -mode=1
 	go run feedcritic.go -mode=2
-	# FIXME only run this if TSV was passed in
-	cp $(TSV) .
+	if [ $(TSV) != '' ]; then \ 
+		cp $(TSV) .;
+	fi
 	go run feedcritic.go -mode=3
 	make deploy
 deploy:
