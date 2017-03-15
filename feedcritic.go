@@ -33,10 +33,10 @@ func main() {
 		bytes, _ := ioutil.ReadFile(opmlFile)
 		var doc OPML
 		xml.Unmarshal(bytes, &doc)
-		var podcast PodcastJson
+		var podcast Podcast
 		var count = 0
-		var filemap map[string]PodcastJson
-		filemap = make(map[string]PodcastJson)
+		var filemap map[string]Podcast
+		filemap = make(map[string]Podcast)
 		for _, outline := range doc.Body.Outlines {
 			count++
 			podcast.Title = outline.Title
@@ -75,18 +75,18 @@ func main() {
 	}
 	// Parse XML files downloaded previously (1.xml, 2.xml, etc.).
 	if *mode == 2 {
-		var podmap map[string]PodcastJson
-		podmap = make(map[string]PodcastJson)
+		var podmap map[string]Podcast
+		podmap = make(map[string]Podcast)
 		file, e := ioutil.ReadFile(filesDownloaded)
 		if e != nil {
 			fmt.Printf("File error: %v\n", e)
 			os.Exit(1)
 		}
-		var filemap map[string]PodcastJson
+		var filemap map[string]Podcast
 		json.Unmarshal(file, &filemap)
 		var allEpisodes []Episode
 		for k, v := range filemap {
-			var podcast PodcastJson
+			var podcast Podcast
 			filename := k
 			podcast.Filename = filename
 			xml, _ := ioutil.ReadFile(filename)
@@ -139,13 +139,13 @@ func main() {
 	// Create podcasts.json which index.html and feedcritic.js will use to render information about the podcasts on an HTML page. If a podcasts.tsv file is present, we will supplement the information with fields such as rating, titleFromFeed, and dead.
 	if *mode == 3 {
 
-		var allPodcasts []PodcastJson
+		var allPodcasts []Podcast
 		file, e := ioutil.ReadFile(fileDetails)
 		if e != nil {
 			fmt.Printf("File error: %v\n", e)
 			os.Exit(1)
 		}
-		var podmap map[string]PodcastJson
+		var podmap map[string]Podcast
 		json.Unmarshal(file, &podmap)
 
 		csvFile, tsvOpenError := os.Open(podcastsTsvFile)
@@ -155,7 +155,7 @@ func main() {
 				// FIXME: sometimes there isn't a title
 				allPodcasts = append(allPodcasts, v)
 			}
-			sort.Sort(ByTheTitle(allPodcasts))
+			sort.Sort(ByTitle(allPodcasts))
 			podcastsAsJsonData, _ := json.MarshalIndent(allPodcasts, "", "  ")
 			ioutil.WriteFile(podcastsAsJsonFile, podcastsAsJsonData, 0644)
 		} else {
@@ -176,8 +176,8 @@ func main() {
 				os.Exit(1)
 			}
 
-			var allPodcasts2 []PodcastJson
-			var podcast PodcastJson
+			var allPodcasts2 []Podcast
+			var podcast Podcast
 			for _, each := range csvData {
 				podcast.Title = each[4]
 				podcast.Feed = each[5]
@@ -192,7 +192,7 @@ func main() {
 	}
 }
 
-type PodcastJson struct {
+type Podcast struct {
 	Title       string `json:"title"`
 	Feed        string `json:"feed"`
 	URL         string `json:"url"`
@@ -211,6 +211,14 @@ type PodcastJson struct {
 	   "dead": "",
 	*/
 
+}
+
+type Episode struct {
+	Title       string
+	Link        string
+	PubDate     string
+	Podcast     string
+	Description template.HTML
 }
 
 type OPML struct {
@@ -233,11 +241,11 @@ func (a ByDate) Len() int           { return len(a) }
 func (a ByDate) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByDate) Less(i, j int) bool { return a[i].PubDate > a[j].PubDate }
 
-type ByTheTitle []PodcastJson
+type ByTitle []Podcast
 
-func (a ByTheTitle) Len() int           { return len(a) }
-func (a ByTheTitle) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByTheTitle) Less(i, j int) bool { return a[i].Title < a[j].Title }
+func (a ByTitle) Len() int           { return len(a) }
+func (a ByTitle) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByTitle) Less(i, j int) bool { return a[i].Title < a[j].Title }
 
 // modified from https://github.com/siongui/userpages/blob/master/content/code/go-xml/parseFeed.go
 func parseFeedContent(content []byte) (Rss2, bool, error) {
@@ -282,14 +290,6 @@ type Item struct {
 	Content     template.HTML `xml:"encoded"`
 	PubDate     string        `xml:"pubDate"`
 	DcDate      string        `xml:"date"`
-}
-
-type Episode struct {
-	Title       string
-	Link        string
-	PubDate     string
-	Podcast     string
-	Description template.HTML
 }
 
 const atomErrStr = "expected element type <rss> but have <feed>"
