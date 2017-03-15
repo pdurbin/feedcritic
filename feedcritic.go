@@ -33,10 +33,10 @@ func main() {
 		bytes, _ := ioutil.ReadFile(opmlFile)
 		var doc OPML
 		xml.Unmarshal(bytes, &doc)
-		var podcast PodcastFromOpml
+		var podcast PodcastJson
 		var count = 0
-		var filemap map[string]PodcastFromOpml
-		filemap = make(map[string]PodcastFromOpml)
+		var filemap map[string]PodcastJson
+		filemap = make(map[string]PodcastJson)
 		for _, outline := range doc.Body.Outlines {
 			count++
 			podcast.Title = outline.Title
@@ -82,7 +82,7 @@ func main() {
 			fmt.Printf("File error: %v\n", e)
 			os.Exit(1)
 		}
-		var filemap map[string]PodcastFromOpml
+		var filemap map[string]PodcastJson
 		json.Unmarshal(file, &filemap)
 		var allEpisodes []Episode
 		for k, v := range filemap {
@@ -192,12 +192,6 @@ func main() {
 	}
 }
 
-type PodcastFromOpml struct {
-	Title string
-	Feed  string
-	URL   string
-}
-
 type PodcastJson struct {
 	Title       string `json:"title"`
 	Feed        string `json:"feed"`
@@ -238,12 +232,6 @@ type ByDate []Episode
 func (a ByDate) Len() int           { return len(a) }
 func (a ByDate) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByDate) Less(i, j int) bool { return a[i].PubDate > a[j].PubDate }
-
-type ByTitle []PodcastFromOpml
-
-func (a ByTitle) Len() int           { return len(a) }
-func (a ByTitle) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByTitle) Less(i, j int) bool { return a[i].Title < a[j].Title }
 
 type ByTheTitle []PodcastJson
 
