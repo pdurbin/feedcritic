@@ -1,4 +1,6 @@
 TSV=''
+DIR='/tmp'
+
 usage:
 	@echo "Run one of these:"
 	@echo " -'make all DIR=path/to/deploy'"
@@ -8,6 +10,12 @@ all:
 	# mode 1 is the one that's expensive since it downloads all the feeds as XML files
 	make cleanxml
 	go run feedcritic.go -mode=1
+	go run feedcritic.go -mode=2
+	if [ $(TSV) != '' ]; then cp $(TSV) .; fi
+	go run feedcritic.go -mode=3
+	make deploy
+gendeploy:
+	make clean
 	go run feedcritic.go -mode=2
 	if [ $(TSV) != '' ]; then cp $(TSV) .; fi
 	go run feedcritic.go -mode=3
