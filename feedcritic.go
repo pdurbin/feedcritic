@@ -120,6 +120,7 @@ func main() {
 						}
 					}
 					podcast.Latest = bigdate
+					podcast.Oldest = smalldate
 
 				}
 			} else {
@@ -181,9 +182,12 @@ func main() {
 			for _, each := range csvData {
 				podcast.Title = each[4]
 				podcast.Feed = each[5]
+				podcast.Rating = each[1]
+				podcast.Retired = each[3]
 				podcast.Description = podmap[podcast.Feed].Description
 				podcast.URL = podmap[podcast.Feed].URL
 				podcast.Latest = podmap[podcast.Feed].Latest
+				podcast.Oldest = podmap[podcast.Feed].Oldest
 				allPodcasts2 = append(allPodcasts2, podcast)
 			}
 			podcastsAsJsonData, _ := json.MarshalIndent(allPodcasts2, "", "  ")
@@ -197,20 +201,11 @@ type Podcast struct {
 	Feed        string `json:"feed"`
 	URL         string `json:"url"`
 	Description string `json:"description"`
-	Filename    string
+	Filename    string `json:"filename"`
 	Latest      string `json:"latest"`
-	//Latest      string `json:"updated"`
-	/*
-	   "title": "Functional Geekery",
-	   "url": "",
-	   "description": "Functional Geeks, Geeking Functionally",
-	   "feed": "https://www.functionalgeekery.com/feed/mp3/",
-	   "updated": "2017-03-07",
-	   "titleFromFeed": "000 Functional Geekery",
-	   "rating": "5",
-	   "dead": "",
-	*/
-
+	Oldest      string `json:"oldest"`
+	Rating      string `json:"rating"`
+	Retired     string `json:"retired"`
 }
 
 type Episode struct {
