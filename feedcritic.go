@@ -23,7 +23,6 @@ func main() {
 	var mode = flag.Int("mode", 1, "Mode 1 downloads the feeds locally and mode 2 operates on locally downloaded files.")
 	flag.Parse()
 	var opmlFile = "antennapod-feeds.opml"
-	//var opmlAsJsonFile = "opml.json"
 	var filesDownloaded = "files.json"
 	var fileDetails = "details.json"
 	var fileLatest = "latest.json"
