@@ -198,7 +198,7 @@ type Podcast struct {
 	URL         string `json:"url"`
 	Description string `json:"description"`
 	Filename    string
-	Latest      string
+	Latest      string `json:"latest"`
 	//Latest      string `json:"updated"`
 	/*
 	   "title": "Functional Geekery",

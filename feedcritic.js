@@ -23,7 +23,7 @@ function clearResult() {
 function get_result_podcasts(data) {
     var r = data.length + " feeds <ul>";
     for (var i = 0; i < data.length; ++i) {
-        r = r + "<li style=\"list-style: none;\"><a href=\"" + data[i]["feed"] + "\"><img src=\"rssfeed.svg\" height=35px></a> <a href=\"" + data[i]["url"] + "\">" + data[i]["title"] + "</a> " + "(updated " + data[i]["Latest"] + "): " + data[i]["description"];
+        r = r + "<li style=\"list-style: none;\"><a href=\"" + data[i]["feed"] + "\"><img src=\"rssfeed.svg\" height=35px></a> <a href=\"" + data[i]["url"] + "\">" + data[i]["title"] + "</a> " + "(updated " + data[i]["latest"] + "): " + data[i]["description"];
         r = r + "</li>";
     }
     return r + "</ul>";
