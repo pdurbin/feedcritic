@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/csv"
 	"encoding/json"
 	"encoding/xml"
@@ -37,6 +38,13 @@ func main() {
 		var count = 0
 		var filemap map[string]Podcast
 		filemap = make(map[string]Podcast)
+
+		// FIXME: Remove this after upgrading to Go 1.4 or higher. See also http://stackoverflow.com/questions/25008571/golang-issue-x509-cannot-verify-signature-algorithm-unimplemented-on-net-http
+		cfg := &tls.Config{InsecureSkipVerify: true}
+		http.DefaultClient.Transport = &http.Transport{
+			TLSClientConfig: cfg,
+		}
+
 		for _, outline := range doc.Body.Outlines {
 			count++
 			podcast.Title = outline.Title
@@ -63,6 +71,8 @@ func main() {
 					//log.Fatal(err)
 				}
 				file.Close()
+			} else {
+				//fmt.Printf("%v\n", e)
 			}
 
 		}
