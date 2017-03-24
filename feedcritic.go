@@ -29,6 +29,62 @@ func main() {
 	var fileLatest = "latest.json"
 	var podcastsAsJsonFile = "podcasts.json"
 	var podcastsTsvFile = "podcasts.tsv"
+	var untrackedAsJsonFile = "untracked.json"
+	if *mode == 0 {
+		csvFile, tsvOpenError := os.Open(podcastsTsvFile)
+		if tsvOpenError != nil {
+			//fmt.Println("mode 0 is only for if you have a tsv file. Error: " + tsvOpenError.Error())
+			os.Exit(1)
+		}
+
+		defer csvFile.Close()
+
+		reader := csv.NewReader(csvFile)
+		reader.Comma = '\t'
+
+		reader.FieldsPerRecord = -1
+
+		_, _ = reader.Read() // delete header
+
+		csvData, err := reader.ReadAll()
+
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		var allPodcasts2 []Podcast
+		var podcast Podcast
+		var podmap map[string]Podcast
+		podmap = make(map[string]Podcast)
+		for _, each := range csvData {
+			podcast.Title = each[4]
+			podcast.Feed = each[5]
+			podcast.Rating = each[1]
+			podcast.Retired = each[3]
+			podmap[podcast.Feed] = podcast
+		}
+		bytes, _ := ioutil.ReadFile(opmlFile)
+		var doc OPML
+		xml.Unmarshal(bytes, &doc)
+		var untracked Podcast
+		for _, outline := range doc.Body.Outlines {
+			feedUrl := outline.XMLURL
+			if _, ok := podmap[feedUrl]; ok {
+			} else {
+				untracked.Title = outline.Title
+				untracked.Feed = outline.XMLURL
+				untracked.URL = outline.HTMLURL
+				allPodcasts2 = append(allPodcasts2, untracked)
+			}
+
+		}
+		sort.Sort(ByTitle(allPodcasts2))
+		podcastsAsJsonData, _ := json.MarshalIndent(allPodcasts2, "", "  ")
+
+		ioutil.WriteFile(untrackedAsJsonFile, podcastsAsJsonData, 0644)
+
+	}
 	// Based on the feeds in the OPML file, download each feed to 1.xml, 2.xml, etc.
 	if *mode == 1 {
 		bytes, _ := ioutil.ReadFile(opmlFile)
