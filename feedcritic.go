@@ -165,6 +165,7 @@ func main() {
 
 					smalldate := "9999999"
 					bigdate := "0"
+					var latestEpisode Episode
 					for _, each := range feed.ItemList {
 						// episodeTitle := strings.TrimSpace(each.Title)
 						pubDate := ParsePubDate(each.PubDate)
@@ -180,12 +181,14 @@ func main() {
 						allEpisodes = append(allEpisodes, episode)
 						if pubDate > bigdate {
 							bigdate = pubDate
+							latestEpisode = episode
 						}
 						if pubDate < smalldate {
 							smalldate = pubDate
 						}
 					}
 					podcast.Latest = bigdate
+					podcast.LatestEpisode = latestEpisode
 					podcast.Oldest = smalldate
 
 				}
@@ -250,10 +253,12 @@ func main() {
 				podcast.Feed = each[5]
 				podcast.Rating = each[1]
 				podcast.Retired = each[3]
+				podcast.Slug = each[0]
 				podcast.Description = podmap[podcast.Feed].Description
 				podcast.URL = podmap[podcast.Feed].URL
 				podcast.Latest = podmap[podcast.Feed].Latest
 				podcast.Oldest = podmap[podcast.Feed].Oldest
+				podcast.LatestEpisode = podmap[podcast.Feed].LatestEpisode
 				allPodcasts2 = append(allPodcasts2, podcast)
 			}
 			podcastsAsJsonData, _ := json.MarshalIndent(allPodcasts2, "", "  ")
@@ -263,15 +268,17 @@ func main() {
 }
 
 type Podcast struct {
-	Title       string `json:"title"`
-	Feed        string `json:"feed"`
-	URL         string `json:"url"`
-	Description string `json:"description"`
-	Filename    string `json:"filename"`
-	Latest      string `json:"latest"`
-	Oldest      string `json:"oldest"`
-	Rating      string `json:"rating"`
-	Retired     string `json:"retired"`
+	Title         string  `json:"title"`
+	Feed          string  `json:"feed"`
+	URL           string  `json:"url"`
+	Description   string  `json:"description"`
+	Filename      string  `json:"filename"`
+	Latest        string  `json:"latest"`
+	Oldest        string  `json:"oldest"`
+	Rating        string  `json:"rating"`
+	Retired       string  `json:"retired"`
+	Slug          string  `json:"slug"`
+	LatestEpisode Episode `json:"latestEpisode"`
 }
 
 type Episode struct {
