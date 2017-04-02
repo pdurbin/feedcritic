@@ -26,6 +26,6 @@ deploy:
 	echo "Copying files to $(DIR)"
 	cp index.html feedcritic.js rssfeed.svg podcasts.json latest.json untracked.json $(DIR)
 clean:
-	rm -f details.json latest.json podcasts.json podcasts.tsv
+	rm -f details.json latest.json podcasts.json
 cleanxml:
 	rm -f *.xml files.json
