@@ -1,6 +1,5 @@
 function init() {
     loadJSON(function(response) {
-        // Parse JSON string into object
         var mydata = JSON.parse(response);
         document.getElementById("result").innerHTML = get_result_podcasts(mydata);
     },
@@ -9,11 +8,18 @@ function init() {
 
 function showLatest() {
     loadJSON(function(response) {
-        // Parse JSON string into object
         var mydata = JSON.parse(response);
         document.getElementById("result").innerHTML = get_result_latest(mydata);
     },
     "latest.json");
+}
+
+function showUntracked() {
+    loadJSON(function(response) {
+        var mydata = JSON.parse(response);
+        document.getElementById("result").innerHTML = get_result_untracked(mydata);
+    },
+    "untracked.json");
 }
 
 function clearResult() {
@@ -23,22 +29,10 @@ function clearResult() {
 function get_result_podcasts(data) {
     var r = data.length + " feeds <ul>";
     for (var i = 0; i < data.length; ++i) {
-        r = r + "<li style=\"list-style: none;\"><a href=\"" + data[i]["feed"] + "\"><img src=\"rssfeed.svg\" height=35px></a> <a href=\"" + data[i]["url"] + "\">" + data[i]["title"] + "</a> (";
-        var rating = data[i]["rating"];
-        if (rating != '') {
-            r = r + rating + " stars, ";
-        }
-        r = r + "updated " + data[i]["latest"] + "): " + data[i]["description"];
-        var oldest = data[i]["oldest"];
-        if (oldest != '' && oldest != '0001-01-01') {
-            r = r + " (Oldest: " + oldest + ")";
-        }
-        /*
-        var retired = data[i]["oldest"];
-        if (retired == '') {
-            r = r + " (retired)";
-        }
-        */
+        r = r + "<li style=\"list-style: none;\"><a href=\"" + data[i]["feed"] + "\"><img src=\"rssfeed.svg\" height=35px></a> <a href=\"" + data[i]["url"] + "\"><b>" + data[i]["title"] + "</b></a>";
+        var latestEpisode = data[i]["latestEpisode"];
+        r = r + "<br>" + latestEpisode["PubDate"] + ": " + "<a href='" + latestEpisode["Link"] + "'><b>" + latestEpisode["Title"] + "</b></a>";
+        r = r + "<br><i>" + data[i]["description"] + "</i>";
         r = r + "</li>";
     }
     return r + "</ul>";
@@ -48,6 +42,16 @@ function get_result_latest(data) {
     var r = data.length + " episodes <ul>";
     for (var i = 0; i < data.length; ++i) {
         r = r + "<li><a href=\"" + data[i]["Link"] + "\">" + data[i]["Title"] + "</a> (" + data[i]["Podcast"] + ")";
+        r = r + "</li>";
+    }
+    return r + "</ul>";
+}
+
+function get_result_untracked(data) {
+    var r = "Number of untracked podcasts: " + data.length + "<ul>";
+    for (var i = 0; i < data.length; ++i) {
+        r = r + "<li style=\"list-style: none;\"><a href=\"" + data[i]["feed"] + "\"><img src=\"rssfeed.svg\" height=35px></a> ";
+        r = r + "<a href=\"" + data[i]["url"] + "\">" + data[i]["title"] + "</a>";
         r = r + "</li>";
     }
     return r + "</ul>";
