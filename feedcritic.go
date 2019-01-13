@@ -377,6 +377,10 @@ func ParsePubDate(datein string) string {
 				if err != nil {
 					// 22 Dec 2015 03:00:00 GMT
 					parsedTime, err = time.Parse("02 Jan 2006 15:04:05 MST", datein)
+					if err != nil {
+						// Sat, 5 January 2019 11:00:00 +0100
+						parsedTime, err = time.Parse("Mon, 2 January 2006 15:04:05 +0100", datein)
+					}
 				}
 			}
 		}
