@@ -254,8 +254,12 @@ func main() {
 				podcast.Rating = each[1]
 				podcast.Retired = each[3]
 				podcast.Slug = each[0]
+				if len(each) == 7 {
+					podcast.URL = each[6]
+				} else {
+					podcast.URL = ""
+				}
 				podcast.Description = podmap[podcast.Feed].Description
-				podcast.URL = podmap[podcast.Feed].URL
 				podcast.Latest = podmap[podcast.Feed].Latest
 				podcast.Oldest = podmap[podcast.Feed].Oldest
 				podcast.LatestEpisode = podmap[podcast.Feed].LatestEpisode
