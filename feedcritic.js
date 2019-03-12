@@ -2,24 +2,21 @@ function init() {
     loadJSON(function(response) {
         var mydata = JSON.parse(response);
         document.getElementById("result").innerHTML = get_result_podcasts(mydata);
-    },
-    "podcasts.json");
+    }, "podcasts.json");
 }
 
 function showLatest() {
     loadJSON(function(response) {
         var mydata = JSON.parse(response);
         document.getElementById("result").innerHTML = get_result_latest(mydata);
-    },
-    "latest.json");
+    }, "latest.json");
 }
 
 function showUntracked() {
     loadJSON(function(response) {
         var mydata = JSON.parse(response);
         document.getElementById("result").innerHTML = get_result_untracked(mydata);
-    },
-    "untracked.json");
+    }, "untracked.json");
 }
 
 function clearResult() {
@@ -59,7 +56,6 @@ function get_result_untracked(data) {
 
 // https://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
 function loadJSON(callback, jsonFile) {
-
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
     xobj.open('GET', jsonFile, true);

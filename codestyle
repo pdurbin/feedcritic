@@ -1,2 +1,3 @@
 #!/bin/sh
-js_beautify -o feedcritic.js
+# https://packages.ubuntu.com/bionic/jsbeautifier
+js-beautify --indent-size=4 --replace feedcritic.js
