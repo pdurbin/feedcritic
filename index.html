@@ -29,17 +29,23 @@
   main { display: grid; grid-template-columns: 300px 1fr; max-width: 1200px; margin: 0 auto; }
   #movies { border-right: 1px solid var(--line); height: calc(100vh - var(--hh, 140px));
     overflow-y: auto; position: sticky; top: var(--hh, 140px); padding: 8px 0; }
+  #movies { padding-top: 0; }
+  #msort { position: sticky; top: 0; z-index: 1; background: var(--bg); padding: 8px 16px;
+    border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+  #msort button { font: inherit; font-size: 12px; padding: 2px 8px; border-radius: 10px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--text); width: auto; }
+  #msort button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
   #movies .letter { font-weight: 600; color: var(--muted); padding: 10px 16px 2px; font-size: 12px; }
-  #movies button { display: flex; justify-content: space-between; width: 100%; text-align: left;
+  #mlist button { display: flex; justify-content: space-between; width: 100%; text-align: left;
     border: 0; background: none; color: var(--text); font: inherit; padding: 3px 16px; cursor: pointer; }
-  #movies button:hover { background: var(--chip); }
-  #movies button.on { background: var(--accent); color: #fff; }
-  #movies button { justify-content: flex-start; align-items: center; gap: 6px; }
+  #mlist button:hover { background: var(--chip); }
+  #mlist button.on { background: var(--accent); color: #fff; }
+  #mlist button { justify-content: flex-start; align-items: center; gap: 6px; }
   #movies .t { flex: 1; }
   #movies .count { color: var(--muted); font-size: 12px; min-width: 10px; text-align: right; }
   .pt { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; flex: none;
     display: inline-grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; }
-  #movies button.on .count { color: #fff; }
+  #mlist button.on .count { color: #fff; }
   #results { padding: 12px 16px 40px; }
   #summary { color: var(--muted); margin: 4px 0 12px; }
   #summary a { color: var(--accent); cursor: pointer; }
@@ -113,7 +119,13 @@
   </div>
 </header>
 <main>
-  <nav id="movies"></nav>
+  <nav id="movies">
+    <div id="msort">Sort movies:
+      <button data-msort="az" class="on">A–Z</button>
+      <button data-msort="count">Most episodes</button>
+    </div>
+    <div id="mlist"></div>
+  </nav>
   <section id="results"><div id="summary"></div><div id="list"></div></section>
 </main>
 <section id="podcasts"></section>
@@ -124,7 +136,9 @@ const $ = s => document.querySelector(s);
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fold = s => s.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase();
 let selected = null;
-let showDesc = false;  // also list episodes that only mention the search in their description
+let showDesc = false;
+let movieSort = 'az';  // movie list order: 'az' or 'count'
+try { if (localStorage.getItem('movieSort') === 'count') movieSort = 'count'; } catch (e) {}  // also list episodes that only mention the search in their description
 
 D.episodes.forEach(e => {
   e._movies = e.movies.map(k => D.movies[k].title).join(' ');
@@ -172,18 +186,26 @@ function render() {
   const pod = $('#podcast').value;
   const inPod = e => !pod || e.podcast === pod;
 
-  // movie list: only movies whose own title matches
-  let letter = '', html = '';
+  // movie list: only movies whose own title matches; A–Z with letter headings, or by episode count
+  const rows = [];
   for (const key of D.movie_order) {
     const m = D.movies[key];
     const n = m.episodes.filter(i => inPod(D.episodes[i])).length;
-    if (!n || !all(res, m._t)) continue;
-    const bare = key.replace(/^(the|a|an) /, '');
-    const L = /^[0-9]/.test(bare) ? '#' : bare[0].toUpperCase();
-    if (L !== letter) { letter = L; html += `<div class="letter">${L}</div>`; }
+    if (n && all(res, m._t)) rows.push({ key, m, n });
+  }
+  if (movieSort === 'count') rows.sort((a, b) => b.n - a.n);  // stable: ties stay A–Z
+  let letter = '', html = '';
+  for (const { key, m, n } of rows) {
+    if (movieSort === 'az') {
+      const bare = key.replace(/^(the|a|an) /, '');
+      const L = /^[0-9]/.test(bare) ? '#' : bare[0].toUpperCase();
+      if (L !== letter) { letter = L; html += `<div class="letter">${L}</div>`; }
+    } else if (n !== letter) {
+      letter = n; html += `<div class="letter">${n} episode${n === 1 ? '' : 's'}</div>`;
+    }
     html += `<button data-k="${key}" class="${key === selected ? 'on' : ''}"><span class="t">${esc(m.title)}</span><span class="count">${n > 1 ? n : ''}</span></button>`;
   }
-  $('#movies').innerHTML = html || '<div class="letter">No movie titles match</div>';
+  $('#mlist').innerHTML = html || '<div class="letter">No movie titles match</div>';
 
   let eps, extra = [];
   if (selected) {
@@ -307,10 +329,19 @@ document.addEventListener('click', e => {
 $('#q').addEventListener('input', () => { selected = null; showDesc = false; render(); });
 // Enter jumps to the first matching movie
 $('#q').addEventListener('keydown', e => {
-  const first = $('#movies button');
+  const first = $('#mlist button');
   if (e.key === 'Enter' && first) select(first.dataset.k);
 });
 $('#podcast').addEventListener('change', render);
+function setMovieSort(v) {
+  movieSort = v;
+  document.querySelectorAll('#msort button').forEach(b => b.classList.toggle('on', b.dataset.msort === v));
+  try { localStorage.setItem('movieSort', v); } catch (e) {}
+  render();
+  $('#movies').scrollTop = 0;
+}
+document.querySelectorAll('#msort button').forEach(b => b.onclick = () => setMovieSort(b.dataset.msort));
+document.querySelectorAll('#msort button').forEach(b => b.classList.toggle('on', b.dataset.msort === movieSort));
 $('#sort').addEventListener('change', render);
 const h = decodeURIComponent(location.hash.slice(1));
 if (h && D.movies[h]) selected = h;
