@@ -1,0 +1,23 @@
+{
+  "_comment": "Optional. Copy to overrides.json and edit. 'by_movie' maps the movie text parsed from an episode title (after ' on ' in 'Guest on Movie', or after '123: ' in numbered titles) to the movies it is really about; [] tags nothing. 'by_title' maps a full episode title, e.g. to tell a remake from the original by adding a year.",
+  "by_movie": {
+    "Before Sunrise and Before Sunset": [
+      "Before Sunrise",
+      "Before Sunset"
+    ],
+    "Jeanne Dielman, 23 Quai des Commerce, 1080 Bruxelles": [
+      "Jeanne Dielman, 23 Quai du Commerce, 1080 Bruxelles"
+    ],
+    "Bong Joon-ho’s The Host": [
+      "The Host (2006)"
+    ]
+  },
+  "by_title": {
+    "James Bond Ruins Everything": [
+      "James Bond films"
+    ],
+    "166: Ghostbusters": [
+      "Ghostbusters (2016)"
+    ]
+  }
+}
