@@ -1,5 +1,5 @@
 {
-  "_comment": "Optional. Copy to overrides.json and edit. 'by_movie' maps the movie text parsed from an episode title (after ' on ' in 'Guest on Movie', or after '123: ' in numbered titles) to the movies it is really about; [] tags nothing. 'by_title' maps a full episode title, e.g. to tell a remake from the original by adding a year. 'list_style' names podcasts whose titles list several movies, like '123 - Movie / Movie (w/ Guest)' (see tag.py).",
+  "_comment": "Optional. Copy to overrides.json and edit. 'by_movie' maps the movie text parsed from an episode title (after ' on ' in 'Guest on Movie', or after '123: ' in numbered titles) to the movies it is really about; [] tags nothing. 'by_title' maps a full episode title, e.g. to tell a remake from the original by adding a year. 'list_style' names podcasts whose titles are just movie names, possibly several, like '123 - Movie / Movie (w/ Guest)' or 'Fargo, Part 2' (see tag.py).",
   "by_movie": {
     "Before Sunrise and Before Sunset": [
       "Before Sunrise",

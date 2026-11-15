@@ -43,6 +43,7 @@
   #results { padding: 12px 16px 40px; }
   #summary { color: var(--muted); margin: 4px 0 12px; }
   #summary a { color: var(--accent); cursor: pointer; }
+  #summary .versions { margin-top: 4px; font-size: 13px; }
   .ep { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
     padding: 12px 14px; margin-bottom: 10px;
     display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: start; }
@@ -131,6 +132,10 @@ D.episodes.forEach(e => {
   e._desc = fold(e.description);
 });
 for (const m of Object.values(D.movies)) m._t = fold(m.title);
+// same title, different year: "halloween 1978", "halloween 2018", "halloween"
+const baseKey = k => k.replace(/ (?:1[89]|20)\d\d$/, '');
+const VERSIONS = {};
+for (const k of D.movie_order) (VERSIONS[baseKey(k)] ||= []).push(k);
 $('#stats').textContent = `${Object.keys(D.movies).length} movies · ${D.episodes.length} episodes · ${D.podcasts.length} podcast${D.podcasts.length > 1 ? 's' : ''}`;
 D.podcasts.forEach(p => $('#podcast').insertAdjacentHTML('beforeend', `<option>${esc(p.title)}</option>`));
 
@@ -183,7 +188,10 @@ function render() {
   let eps, extra = [];
   if (selected) {
     eps = D.movies[selected].episodes.map(i => D.episodes[i]).filter(inPod);
-    $('#summary').innerHTML = `${eps.length} episode${eps.length > 1 ? 's' : ''} about <b>${esc(D.movies[selected].title)}</b> · <a id="clear">show all</a>`;
+    const others = VERSIONS[baseKey(selected)].filter(k => k !== selected);
+    const otherLinks = others.map(k => `<a data-k="${k}">${esc(D.movies[k].title)}</a> (${D.movies[k].episodes.length})`).join(', ');
+    $('#summary').innerHTML = `${eps.length} episode${eps.length > 1 ? 's' : ''} about <b>${esc(D.movies[selected].title)}</b> · <a id="clear">show all</a>`
+      + (others.length ? `<div class="versions">Other versions: ${otherLinks}</div>` : '');
   } else {
     const pool = D.episodes.filter(inPod);
     eps = pool.filter(e => all(res, e._head));
