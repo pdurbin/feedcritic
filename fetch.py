@@ -27,6 +27,7 @@ def strip_html(s):
     s = html.unescape(s)
     s = re.sub(r"Hosted by Simplecast.*?advertising\.", "", s, flags=re.S)
     s = re.sub(r"We love hearing from listeners!.*?Tumblr!", "", s, flags=re.S)
+    s = re.sub(r"Learn more about your ad choices\. Visit \S+", "", s)
     return re.sub(r"\n{3,}", "\n\n", s).strip()
 
 

@@ -4,3 +4,4 @@ feeds.txt
 episodes.json
 data.js
 overrides.json
+__pycache__/
