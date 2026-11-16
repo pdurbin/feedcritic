@@ -5,11 +5,339 @@
       "Before Sunrise",
       "Before Sunset"
     ],
+    "Time of the Wolf and 2046": [
+      "Time of the Wolf",
+      "2046"
+    ],
+    "The Gay Divorcee and Wagon Master": [
+      "The Gay Divorcee",
+      "Wagon Master"
+    ],
+    "Best of the Best and everything else": [
+      "Best of the Best"
+    ],
+    "The F Word, aka What If": [
+      "What If"
+    ],
     "Jeanne Dielman, 23 Quai des Commerce, 1080 Bruxelles": [
       "Jeanne Dielman, 23 Quai du Commerce, 1080 Bruxelles"
     ],
     "Bong Joon-ho’s The Host": [
       "The Host (2006)"
+    ],
+    "Zack Snyder's Dawn of the Dead": [
+      "Dawn of the Dead (2004)"
+    ],
+    "Homicide - Life on the Street": [
+      "Homicide: Life on the Street (TV)"
+    ],
+    "Roma & Oscars Preview": [
+      "Roma"
+    ],
+    "13th / Oscars Post-mortem": [
+      "13th"
+    ],
+    "Suspiria (1977) and Suspiria (2018)": [
+      "Suspiria (1977)",
+      "Suspiria (2018)"
+    ],
+    "Horrible Bosses & Horrible Bosses 2": [
+      "Horrible Bosses",
+      "Horrible Bosses 2"
+    ],
+    "Cloudy With a Chance of Meatballs 1 & 2": [
+      "Cloudy With a Chance of Meatballs",
+      "Cloudy With a Chance of Meatballs 2"
+    ],
+    "The Back to the Future Trilogy": [
+      "Back to the Future",
+      "Back to the Future Part II",
+      "Back to the Future Part III"
+    ],
+    "Lara Croft Tomb Raider Series": [
+      "Lara Croft: Tomb Raider",
+      "Lara Croft Tomb Raider: The Cradle of Life"
+    ],
+    "The (Existing) Star Wars Movies": [
+      "Star Wars: Episode I - The Phantom Menace",
+      "Star Wars: Episode II - Attack of the Clones",
+      "Star Wars: Episode III - Revenge of the Sith",
+      "Star Wars",
+      "The Empire Strikes Back",
+      "Return of the Jedi"
+    ],
+    "Listener Requests I": [
+      "Samurai Cop",
+      "Pride",
+      "2001: A Space Odyssey"
+    ],
+    "Listener Requests II": [
+      "Ex Machina",
+      "Electrick Children",
+      "Clueless"
+    ],
+    "Holiday Special": [
+      "Anchorman 2: The Legend Continues",
+      "American Hustle",
+      "The Hobbit: The Desolation of Smaug",
+      "Frozen"
+    ],
+    "Movies of 2014": [],
+    "Oscar Week 2017": [],
+    "Iron Fist Season One": [
+      "Iron Fist (TV)"
+    ],
+    "Luke Cage Season 1": [
+      "Luke Cage (TV)"
+    ],
+    "Daredevil Season 2": [
+      "Daredevil (TV)"
+    ],
+    "Jessica Jones": [
+      "Jessica Jones (TV)"
+    ],
+    "Gilmore Girls: A Year in the Life": [
+      "Gilmore Girls: A Year in the Life (TV)"
+    ],
+    "A Few Good (Re)Men": [
+      "A Few Good Men"
+    ],
+    "The Re-Departed": [
+      "The Departed"
+    ],
+    "The Re-Heat": [
+      "Heat"
+    ],
+    "Star Wars: A New Hope": [
+      "Star Wars"
+    ],
+    "Ocean’s 11": [
+      "Ocean’s Eleven"
+    ],
+    "Ocean’s 12": [
+      "Ocean’s Twelve"
+    ],
+    "The Rewatchables": [],
+    "Backrooms, Exit 8": [
+      "Backrooms",
+      "Exit 8"
+    ],
+    "Ready or Not 2 vs. They Will Kill You": [
+      "Ready or Not 2",
+      "They Will Kill You"
+    ],
+    "How to make a Killing vs Kind Hearts and Coronets": [
+      "How to Make a Killing",
+      "Kind Hearts and Coronets"
+    ],
+    "Scream 7 review and we rank the entire franchise": [
+      "Scream 7"
+    ],
+    "The Conjuring: Last Rites and Honey Don't": [
+      "The Conjuring: Last Rites",
+      "Honey Don't!"
+    ],
+    "Superman and I Know What You Did Last Summer": [
+      "Superman (2025)",
+      "I Know What You Did Last Summer (2025)"
+    ],
+    "The Monkey and Lord of the Rings: War of the Rohirrim": [
+      "The Monkey",
+      "The Lord of the Rings: The War of the Rohirrim"
+    ],
+    "Alien Earth": [
+      "Alien: Earth (TV)"
+    ],
+    "Squid Game S2": [
+      "Squid Game (TV)"
+    ],
+    "Fallout": [
+      "Fallout (TV)"
+    ],
+    "Hunger Games: A Ballad of Songbirds and Snakes": [
+      "The Hunger Games: The Ballad of Songbirds & Snakes"
+    ],
+    "Kingdom of the Crystal Skull": [
+      "Indiana Jones and the Kingdom of the Crystal Skull"
+    ],
+    "Indiana Jones and the Raiders of the Temple of the Last Crusade": [
+      "Raiders of the Lost Ark (1981)",
+      "Indiana Jones and the Temple of Doom (1984)",
+      "Indiana Jones and the Last Crusade (1989)"
+    ],
+    "Kiss Kiss Bang Bang: The Christmassiest Film Of All Time": [
+      "Kiss Kiss Bang Bang"
+    ],
+    "Director's Spotlight - The China Brothers (Night Shift)": [
+      "Night Shift (2024)"
+    ],
+    "We Watched The Rings: Part One - The Fellowship of the Ring": [
+      "The Lord of the Rings: The Fellowship of the Ring"
+    ],
+    "We Watched The Rings: Part Two - The Two Towers": [
+      "The Lord of the Rings: The Two Towers"
+    ],
+    "We Watched The Rings: Part Three - The Return of the King": [
+      "The Lord of the Rings: The Return of the King"
+    ],
+    "Matrix Resurrections": [
+      "The Matrix Resurrections"
+    ],
+    "Alien V Predator and AVP: Requiem": [
+      "AVP: Alien vs. Predator",
+      "Aliens vs. Predator: Requiem"
+    ],
+    "Prometheus and Alien: Covenant": [
+      "Prometheus",
+      "Alien: Covenant"
+    ],
+    "Alien 3 and Alien Resurrection": [
+      "Alien 3",
+      "Alien Resurrection"
+    ],
+    "Alien and Aliens": [
+      "Alien",
+      "Aliens"
+    ],
+    "Predators and The Predator": [
+      "Predators",
+      "The Predator"
+    ],
+    "Predator and Predator 2": [
+      "Predator",
+      "Predator 2"
+    ],
+    "Emma": [
+      "Emma. (2020)"
+    ],
+    "Tommy Boy Redux": [
+      "Tommy Boy (1995)"
+    ],
+    "Star Wars, Episode VI: Return of the Jedi": [
+      "Return of the Jedi"
+    ],
+    "Star Wars, Episode VIII: The Last Jedi": [
+      "Star Wars: The Last Jedi"
+    ],
+    "Star Wars, Episode IX: The Rise of Skywalker": [
+      "Star Wars: The Rise of Skywalker"
+    ],
+    "The Movie Mass Debate: Star Wars, Episode VIII: The Last Jedi": [
+      "Star Wars: The Last Jedi"
+    ],
+    "The Philosopher’s Stone and The Chamber of Secrets": [
+      "Harry Potter and the Philosopher’s Stone",
+      "Harry Potter and the Chamber of Secrets"
+    ],
+    "The Prisoner of Azkaban and The Goblet of Fire": [
+      "Harry Potter and the Prisoner of Azkaban",
+      "Harry Potter and the Goblet of Fire"
+    ],
+    "The Order of the Phoenix and The Half-Blood Prince": [
+      "Harry Potter and the Order of the Phoenix",
+      "Harry Potter and the Half-Blood Prince"
+    ],
+    "The Deathly Hallows Parts One and Two": [
+      "Harry Potter and the Deathly Hallows: Part 1",
+      "Harry Potter and the Deathly Hallows: Part 2"
+    ],
+    "5am - 10am": [
+      "The Fast and the Furious",
+      "2 Fast 2 Furious"
+    ],
+    "10am - 3pm": [
+      "The Fast and the Furious: Tokyo Drift",
+      "Fast & Furious"
+    ],
+    "3pm - 9pm": [
+      "Fast Five",
+      "Fast & Furious 6"
+    ],
+    "9pm - 3am": [
+      "Furious 7",
+      "The Fate of the Furious"
+    ],
+    "Princess Mononoke (Mononoke-hime)": [
+      "Princess Mononoke"
+    ],
+    "Your Name (Kimi no Na wa)": [
+      "Your Name"
+    ],
+    "Insidious, Chapter Four: The Last Key": [
+      "Insidious: The Last Key"
+    ],
+    "Ocean’s 8": [
+      "Ocean’s Eight"
+    ],
+    "Invasion of the Bodysnatchers (1978)": [
+      "Invasion of the Body Snatchers (1978)"
+    ],
+    "Five Nights at Freddys": [
+      "Five Nights at Freddy’s"
+    ],
+    "But Also, How Good is ’Clueless’?": [
+      "Clueless"
+    ],
+    "Tomb Raider (2001)": [
+      "Lara Croft: Tomb Raider"
+    ],
+    "The Revenant (2016)": [
+      "The Revenant"
+    ],
+    "Once Upon a Time … in Hollywood": [
+      "Once Upon a Time … in Hollywood (2019)"
+    ],
+    "Director's Spotlight - The China Brothers": [
+      "Night Shift (2024)"
+    ],
+    "Karate Kid(s) (1984)": [
+      "The Karate Kid (1984)"
+    ],
+    "Mission Impossible: Dead Reckoning (2023)": [
+      "Mission: Impossible - Dead Reckoning Part 1"
+    ],
+    "Halloween '07": [
+      "Halloween (2007)"
+    ],
+    "Comicpalooza's Worse and Forgotten Movies Elektra 2005": [
+      "Elektra"
+    ],
+    "Luke Cage season 2": [
+      "Luke Cage (TV)"
+    ],
+    "I Spit On Your Grave 1978": [
+      "I Spit on Your Grave (1978)"
+    ],
+    "Super Mario Bros. AND Double Dragon": [
+      "Super Mario Bros.",
+      "Double Dragon"
+    ],
+    "Saw 3with Teffy Wonder of Head Nerds in Charge": [
+      "Saw III"
+    ],
+    "Captain America; The Winter Soldier": [
+      "Captain America: The Winter Soldier"
+    ],
+    "Friday the 13th Pt.2": [
+      "Friday the 13th Part 2"
+    ],
+    "Friday The 13th: Part 3": [
+      "Friday the 13th Part III"
+    ],
+    "Friday The 13th Part 4": [
+      "Friday the 13th: The Final Chapter"
+    ],
+    "Friday The 13th Pt.5": [
+      "Friday the 13th: A New Beginning"
+    ],
+    "Friday The 13th Pt.6": [
+      "Friday the 13th Part VI: Jason Lives"
+    ],
+    "Friday the 13th Part 7": [
+      "Friday the 13th Part VII: The New Blood"
+    ],
+    "The Movie Mass Debate: It (2017)": [
+      "It (2017)"
     ]
   },
   "by_title": {
@@ -18,9 +346,92 @@
     ],
     "166: Ghostbusters": [
       "Ghostbusters (2016)"
+    ],
+    "211: Life": [
+      "Life (2017)"
+    ],
+    "177: The Magnificent Seven": [
+      "The Magnificent Seven (2016)"
+    ],
+    "39: Robocop": [
+      "RoboCop (2014)",
+      "RoboCop (1987)"
+    ],
+    "The Omen’ With Bill Simmons and Chris Ryan": [
+      "The Omen"
+    ],
+    "Creed With Bill Simmons, Wesley Morris, Sean Fennessey, and K. Austin Collins": [
+      "Creed"
+    ],
+    "Miami Vice: Calderone’s Return (Part 1 + 2)": [
+      "Miami Vice (TV)"
+    ],
+    "‘The Gambler’ (2014) With Bill Simmons and Chris Ryan": [
+      "The Gambler (2014)"
+    ],
+    "‘Bad Boys’ (1983) With Bill Simmons and Chris Ryan": [
+      "Bad Boys (1983)"
+    ],
+    "‘The Vanishing’ With Bill Simmons and Chris Ryan": [
+      "The Vanishing (1993)"
+    ],
+    "57 - Suspiria": [
+      "Suspiria (2018)"
+    ],
+    "54 - A Star Is Born": [
+      "A Star Is Born (2018)"
+    ],
+    "‘A Star Is Born’ With Bill Simmons, Amanda Dobbins, and Sean Fennessey": [
+      "A Star Is Born (2018)"
+    ],
+    "389 - Fantastic Four, Jurassic World: Rebirth, and Together (AUDIO VERSION)": [
+      "The Fantastic Four: First Steps",
+      "Jurassic World: Rebirth",
+      "Together"
+    ],
+    "The Ladykillers": [
+      "The Ladykillers (2004)"
+    ],
+    "Pop Classics, Pt. 1 — Romeo + Juliet (1996)": [
+      "William Shakespeare's Romeo + Juliet"
+    ],
+    "#077: (Pt. 2) Stop Making Sense / Justin Timberlake + The Tennessee Kids": [
+      "Stop Making Sense",
+      "Justin Timberlake + The Tennessee Kids"
+    ],
+    "#076: (Pt. 1) Stop Making Sense / Justin Timberlake + The Tennessee Kids": [
+      "Stop Making Sense",
+      "Justin Timberlake + The Tennessee Kids"
+    ],
+    "Episode 44: Side-Eye Sidequest: Remakes with Markellus Ragans of So Wizard Podcast": [],
+    "Episode 51: Arbor Day (The Musical) aka A Evening with Chuck Huber.": [],
+    "A Star Is Born, Pt. 2 - Bradley Cooper (2018)": [
+      "A Star Is Born (2018)"
+    ],
+    "A Star Is Born, Pt. 1 - George Cukor (1954)": [
+      "A Star Is Born (1954)"
+    ],
+    "Episode 135: Side Eye Side Quest Infinity War Review": [
+      "Avengers: Infinity War"
+    ],
+    "Episode 49: Three O'Clock High with Duane \"Smoove\" Williams": [
+      "Three O'Clock High"
+    ],
+    "Erin Berry on Dune": [
+      "Dune (1984)"
+    ],
+    "Ian MacIntyre on Ghostbusters": [
+      "Ghostbusters (1984)"
+    ],
+    "226: It": [
+      "It (2017)"
     ]
   },
   "list_style": [
-    "We Watched A Thing"
+    "We Watched A Thing",
+    "No Podcast for Old Men",
+    "Should you watch this? with The Popcorn Priest",
+    "The Next Picture Show",
+    "Cult 45: The Movie Podcast"
   ]
 }
