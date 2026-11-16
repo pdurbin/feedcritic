@@ -23,6 +23,23 @@
   h1 { margin: 0 0 10px; font-size: 20px; }
   h1 span { color: var(--muted); font-weight: normal; font-size: 14px; margin-left: 8px; }
   .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+  #podfilter { position: relative; }
+  #podfilter summary { list-style: none; cursor: pointer; font: inherit; padding: 8px 30px 8px 10px; border: 1px solid var(--line);
+    border-radius: 6px; background: var(--panel); color: var(--text); white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; position: relative; min-width: 160px; }
+  #podfilter summary::-webkit-details-marker { display: none; }
+  #podfilter summary::after { content: "▾"; position: absolute; right: 10px; color: var(--muted); }
+  #podmenu { position: absolute; z-index: 5; top: calc(100% + 4px); right: 0; width: 360px;
+    max-height: 60vh; overflow-y: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .25); padding: 6px; }
+  #podmenu label { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+  #podmenu label:hover { background: var(--chip); }
+  #podmenu input { width: 16px; height: 16px; accent-color: var(--accent); flex: none; }
+  #podmenu .name { flex: 1; min-width: 0; }
+  #podmenu .n { color: var(--muted); font-size: 12px; }
+  #podmenu .all { display: flex; justify-content: space-between; padding: 4px 8px 8px; border-bottom: 1px solid var(--line);
+    margin-bottom: 4px; font-size: 13px; color: var(--muted); }
+  #podmenu .all button { font: inherit; background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; }
   input[type=search], select { font: inherit; padding: 8px 10px; border: 1px solid var(--line);
     border-radius: 6px; background: var(--panel); color: var(--text); }
   input[type=search] { flex: 1 1 260px; }
@@ -113,7 +130,9 @@
     #grab .bar { width: 40px; height: 5px; border-radius: 3px; background: var(--muted); opacity: .6; }
     #peek { font-size: 13px; color: var(--muted); }
     body:not(.sheet-down) #peek { display: none; }
-    .controls select { flex: 1 1 140px; min-width: 0; }
+    .controls select, #podfilter { flex: 1 1 140px; min-width: 0; }
+    #podfilter summary { min-width: 0; }
+    #podmenu { left: 0; right: auto; width: calc(100vw - 32px); }
   }
 </style>
 </head>
@@ -126,7 +145,10 @@
   </nav>
   <div class="controls">
     <input type="search" id="q" placeholder="Search movie titles, guests… (Enter opens the first movie)" autofocus>
-    <select id="podcast"><option value="">All podcasts</option></select>
+    <details id="podfilter">
+      <summary id="podlabel">All podcasts</summary>
+      <div id="podmenu"></div>
+    </details>
     <select id="sort">
       <option value="new">Newest first</option>
       <option value="old">Oldest first</option>
@@ -172,7 +194,10 @@ const baseKey = k => k.replace(/ (?:1[89]|20)\d\d$/, '');
 const VERSIONS = {};
 for (const k of D.movie_order) (VERSIONS[baseKey(k)] ||= []).push(k);
 $('#stats').textContent = `${Object.keys(D.movies).length} movies · ${D.episodes.length} episodes · ${D.podcasts.length} podcast${D.podcasts.length > 1 ? 's' : ''}`;
-D.podcasts.forEach(p => $('#podcast').insertAdjacentHTML('beforeend', `<option>${esc(p.title)}</option>`));
+// podcast filter: checkboxes; uncheck podcasts to exclude them
+const podSel = new Set(D.podcasts.map(p => p.title));  // all checked by default
+const podCount = {};
+for (const e of D.episodes) podCount[e.podcast] = (podCount[e.podcast] || 0) + 1;
 
 // per-podcast thumbnail: the podcast's artwork, or a generic colored tile with initials
 const PODS = Object.fromEntries(D.podcasts.map(p => [p.title, p]));
@@ -204,8 +229,7 @@ function render() {
   const q = $('#q').value.trim();
   const words = fold(q).split(/\s+/).filter(Boolean);
   const res = wordRes(words);
-  const pod = $('#podcast').value;
-  const inPod = e => !pod || e.podcast === pod;
+  const inPod = e => podSel.has(e.podcast);
 
   // movie list: only movies whose own title matches; A–Z with letter headings, or by episode count
   const rows = [];
@@ -226,7 +250,7 @@ function render() {
     }
     html += `<button data-k="${key}" class="${key === selected ? 'on' : ''}"><span class="t">${esc(m.title)}</span><span class="count">${n > 1 ? n : ''}</span></button>`;
   }
-  $('#mlist').innerHTML = html || '<div class="letter">No movie titles match</div>';
+  $('#mlist').innerHTML = html || `<div class="letter">${podSel.size ? 'No movie titles match' : 'No podcasts selected'}</div>`;
 
   let eps, extra = [];
   if (selected) {
@@ -331,7 +355,9 @@ $('#tab-podcasts').onclick = () => setView('podcasts');
 $('#podcasts').addEventListener('click', e => {
   const b = e.target.closest('[data-pod]');
   if (!b) return;
-  $('#podcast').value = b.dataset.pod;
+  podSel.clear();
+  podSel.add(b.dataset.pod);
+  syncPodMenu();
   selected = null;
   setView('movies');
   render();
@@ -399,7 +425,26 @@ $('#q').addEventListener('keydown', e => {
   const first = $('#mlist button');
   if (e.key === 'Enter' && first) select(first.dataset.k);
 });
-$('#podcast').addEventListener('change', render);
+function syncPodMenu() {
+  document.querySelectorAll('#podmenu input').forEach(c => { c.checked = podSel.has(c.value); });
+  const n = podSel.size;
+  $('#podlabel').textContent = n === D.podcasts.length ? 'All podcasts' : n === 0 ? 'No podcasts' : n === 1 ? [...podSel][0] : `${n} podcasts`;
+}
+$('#podmenu').innerHTML = `<div class="all"><span>Show episodes from</span><span><button type="button" id="podall">All</button> · <button type="button" id="podnone">None</button></span></div>`
+  + D.podcasts.map(p => `<label><input type="checkbox" value="${esc(p.title)}">${podThumb(p.title)}`
+    + `<span class="name">${esc(p.title)}</span><span class="n">${podCount[p.title] || 0}</span></label>`).join('');
+$('#podmenu').addEventListener('change', e => {
+  if (!e.target.matches('input')) return;
+  e.target.checked ? podSel.add(e.target.value) : podSel.delete(e.target.value);
+  syncPodMenu();
+  render();
+});
+$('#podall').onclick = () => { D.podcasts.forEach(p => podSel.add(p.title)); syncPodMenu(); render(); };
+$('#podnone').onclick = () => { podSel.clear(); syncPodMenu(); render(); };
+syncPodMenu();
+// close the menu when clicking elsewhere or pressing Escape
+document.addEventListener('click', e => { if (!$('#podfilter').contains(e.target)) $('#podfilter').open = false; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#podfilter').open = false; });
 function setMovieSort(v) {
   movieSort = v;
   document.querySelectorAll('#msort button').forEach(b => b.classList.toggle('on', b.dataset.msort === v));
