@@ -95,9 +95,25 @@
     .pod-card > .pt { width: 64px; height: 64px; font-size: 22px; }
   }
   details summary { cursor: pointer; color: var(--muted); font-size: 13px; margin-top: 6px; }
+  #grab { display: none; }
+  /* phones: the results are a bottom sheet over the movie list; drag or tap its handle to hide/show it */
   @media (max-width: 760px) {
-    main { grid-template-columns: 1fr; }
-    #movies { position: static; height: 220px; border-right: 0; border-bottom: 1px solid var(--line); }
+    main { display: block; }
+    #movies { position: static; height: auto; min-height: calc(100vh - var(--hh, 140px));
+      overflow: visible; border-right: 0; padding-bottom: 72px; }
+    #msort { top: var(--hh, 140px); }
+    #results { position: fixed; left: 0; right: 0; bottom: 0; top: calc(var(--hh, 140px) + 16px); z-index: 3;
+      background: var(--bg); border: 1px solid var(--line); border-bottom: 0; border-radius: 14px 14px 0 0;
+      box-shadow: 0 -6px 24px rgba(0, 0, 0, .25); overflow-y: auto; overscroll-behavior: contain;
+      padding-top: 0; transition: transform .25s ease; }
+    body.sheet-down #results { transform: translateY(calc(100% - 52px)); overflow: hidden; }
+    #grab { display: flex; flex-direction: column; align-items: center; gap: 6px; position: sticky; top: 0;
+      z-index: 1; margin: 0 -16px 4px; padding: 8px 16px 10px; background: var(--bg); cursor: grab;
+      touch-action: none; user-select: none; -webkit-user-select: none; border-bottom: 1px solid var(--line); }
+    #grab .bar { width: 40px; height: 5px; border-radius: 3px; background: var(--muted); opacity: .6; }
+    #peek { font-size: 13px; color: var(--muted); }
+    body:not(.sheet-down) #peek { display: none; }
+    .controls select { flex: 1 1 140px; min-width: 0; }
   }
 </style>
 </head>
@@ -126,7 +142,12 @@
     </div>
     <div id="mlist"></div>
   </nav>
-  <section id="results"><div id="summary"></div><div id="list"></div></section>
+  <section id="results">
+    <div id="grab" role="button" tabindex="0" aria-label="Show or hide episodes">
+      <span class="bar"></span><span id="peek"></span>
+    </div>
+    <div id="summary"></div><div id="list"></div>
+  </section>
 </main>
 <section id="podcasts"></section>
 <script src="data.js"></script>
@@ -251,6 +272,7 @@ function render() {
       : `<button class="more" id="more">Show ${extra.length} more episode${extra.length === 1 ? '' : 's'} that mention “${esc(q)}” in the description</button>`;
   }
   $('#list').innerHTML = out;
+  $('#peek').textContent = $('#summary').innerText.split('\n')[0].replace(/ · show all$/, '');
   const clear = $('#clear');
   if (clear) clear.onclick = () => select(null);
   const more = $('#more');
@@ -320,8 +342,53 @@ function select(k) {
   selected = selected === k ? null : k;
   location.hash = selected ? encodeURIComponent(selected) : '';
   render();
-  window.scrollTo({ top: 0 });
+  if (isPhone()) {
+    if (selected) setSheet(false);
+    $('#results').scrollTop = 0;
+  } else {
+    window.scrollTo({ top: 0 });
+  }
 }
+
+// --- phone bottom sheet -------------------------------------------------
+const phoneMQ = matchMedia('(max-width: 760px)');
+const isPhone = () => phoneMQ.matches;
+function setSheet(down) {
+  document.body.classList.toggle('sheet-down', down);
+}
+(() => {
+  const grab = $('#grab'), sheet = $('#results');
+  let drag = null;
+  grab.addEventListener('pointerdown', e => {
+    if (!isPhone()) return;
+    const down = document.body.classList.contains('sheet-down');
+    const max = sheet.offsetHeight - 52;  // how far the sheet travels
+    drag = { y: e.clientY, dy: 0, start: down ? max : 0, max };
+    grab.setPointerCapture(e.pointerId);
+    sheet.style.transition = 'none';
+  });
+  grab.addEventListener('pointermove', e => {
+    if (!drag) return;
+    drag.dy = e.clientY - drag.y;
+    const t = Math.min(drag.max, Math.max(0, drag.start + drag.dy));
+    sheet.style.transform = `translateY(${t}px)`;
+  });
+  const end = () => {
+    if (!drag) return;
+    const { dy } = drag;
+    drag = null;
+    sheet.style.transition = '';
+    sheet.style.transform = '';
+    if (Math.abs(dy) < 6) setSheet(!document.body.classList.contains('sheet-down'));  // tap toggles
+    else if (dy > 60) setSheet(true);
+    else if (dy < -60) setSheet(false);
+  };
+  grab.addEventListener('pointerup', end);
+  grab.addEventListener('pointercancel', end);
+  grab.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSheet(!document.body.classList.contains('sheet-down')); }
+  });
+})();
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-k]');
   if (b) select(b.dataset.k);
@@ -339,6 +406,7 @@ function setMovieSort(v) {
   try { localStorage.setItem('movieSort', v); } catch (e) {}
   render();
   $('#movies').scrollTop = 0;
+  if (isPhone()) window.scrollTo({ top: 0 });
 }
 document.querySelectorAll('#msort button').forEach(b => b.onclick = () => setMovieSort(b.dataset.msort));
 document.querySelectorAll('#msort button').forEach(b => b.classList.toggle('on', b.dataset.msort === movieSort));
@@ -346,6 +414,7 @@ $('#sort').addEventListener('change', render);
 const h = decodeURIComponent(location.hash.slice(1));
 if (h && D.movies[h]) selected = h;
 render();
+if (isPhone() && !selected) setSheet(true);
 if (h === 'podcasts') setView('podcasts');
 setHH();
 window.addEventListener('resize', setHH);

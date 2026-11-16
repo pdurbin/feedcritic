@@ -6,8 +6,10 @@ Recognized episode title patterns, tried in order:
   "'Movie' With …"  (first quoted title anywhere: 'Movie' Live From …, The Re-'Movie')
   "Guest on Movie"  (optionally prefixed "Flashback - " or "Someone RIP - ")
 
-Podcasts listed under "list_style" in overrides.json are parsed differently.
-Their titles are just movie names, possibly several, with extras around them:
+Podcasts whose titles mostly don't match those patterns are detected
+automatically and parsed in "list style" (you can also force a podcast into it
+with "list_style" in overrides.json). Their titles are just movie names,
+possibly several, with extras around them:
   "123 - Movie / Movie (w/ Guest)", "Movie + Our Top 10 …", "BONUS - Movie",
   "Movie, Part 1 of 2", "Movie: Bonus Episode!", "#028: Movie / Movie (Pt. 2)",
   "Theme, Pt. 1 — Movie", "Episode 557: Movie (Patreon Pick by …)",
@@ -176,6 +178,17 @@ def parse_title(ep):
     return None
 
 
+def detect_list_style(episodes, threshold=0.5):
+    """Podcasts where fewer than half the titles match the standard patterns."""
+    hits, totals = {}, {}
+    for ep in episodes:
+        p = ep["podcast"]
+        totals[p] = totals.get(p, 0) + 1
+        if parse_title(dict(ep)) is not None:  # copy: parse_title adds fields
+            hits[p] = hits.get(p, 0) + 1
+    return {p for p, n in totals.items() if hits.get(p, 0) / n < threshold}
+
+
 def movies_for(ep, ov):
     """Return [(movie title, came from overrides?)]."""
     if ep["title"] in ov["by_title"]:
@@ -199,6 +212,7 @@ def main():
     ov.setdefault("by_movie", {})
     ov.setdefault("by_title", {})
     ov.setdefault("list_style", [])
+    ov["list_style"] = set(ov["list_style"]) | detect_list_style(data["episodes"])
 
     # pass 1: raw movie titles per episode, and the explicit years seen for each title
     raw = []          # (episode index, base title, year or None)
@@ -254,6 +268,7 @@ def main():
     (HERE / "data.js").write_text(
         "window.FEEDCRITIC = " + json.dumps(data, ensure_ascii=False) + ";\n")
     print(f"{len(movies)} movies across {len(data['episodes'])} episodes")
+    print("list style:", ", ".join(sorted(ov["list_style"])) or "none")
     for t in untagged:
         print("  untagged:", t)
     shared = [m for m in movies.values()
