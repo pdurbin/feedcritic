@@ -338,7 +338,10 @@ function setHH() {
   document.documentElement.style.setProperty('--hh', $('header').offsetHeight + 'px');
 }
 
+let view = 'movies';
 function setView(v) {
+  const changed = v !== view;
+  view = v;
   document.body.classList.toggle('podcasts-view', v === 'podcasts');
   $('#tab-movies').classList.toggle('on', v !== 'podcasts');
   $('#tab-podcasts').classList.toggle('on', v === 'podcasts');
@@ -349,7 +352,7 @@ function setView(v) {
     history.pushState(null, '', selected ? '#' + encodeURIComponent(selected) : location.pathname + location.search);
   }
   setHH();
-  window.scrollTo({ top: 0 });
+  if (changed) window.scrollTo({ top: 0 });  // only when switching tabs, so the movie list keeps its place
 }
 $('#tab-movies').onclick = () => setView('movies');
 $('#tab-podcasts').onclick = () => setView('podcasts');
@@ -363,7 +366,16 @@ $('#podcasts').addEventListener('click', e => {
   setView('movies');
   render();
 });
-window.addEventListener('popstate', () => setView(location.hash === '#podcasts' ? 'podcasts' : 'movies'));
+// Back/Forward (and hash changes from picking a movie): switch tabs if needed, keep the selection in sync
+window.addEventListener('popstate', () => {
+  const v = location.hash === '#podcasts' ? 'podcasts' : 'movies';
+  if (v !== view) setView(v);
+  if (v === 'movies') {
+    const k = decodeURIComponent(location.hash.slice(1));
+    const want = D.movies[k] ? k : null;
+    if (want !== selected) { selected = want; render(); }
+  }
+});
 
 function select(k) {
   selected = selected === k ? null : k;
