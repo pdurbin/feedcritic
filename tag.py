@@ -43,10 +43,10 @@ YEAR = re.compile(r"\s*\((\d{4})\)$")
 
 # list style
 LIST_NUMBER = re.compile(  # "123 - ", "07b – ", "#028: ", "Episode 557: ", "Episode 500!!! - "
-    r"^(?:Episode\s+(\d+)[!:]*\s*-?\s*|#(\d+):\s*|(\d+[ab]?)\s*[-–—]\s*)", re.I)
+    r"^(?:Episode\s+(\d+)[!:]*\s*-?\s*|#(\d+)\s*[-–—:]\s*|(\d+[ab]?)\s*[-–—]\s*)", re.I)
 LIST_LEAD = re.compile(r"^(?:[^\w(#{'\"‘“]+|\((?:Pt|Part)\.?\s*\d+\)\s*)")  # emoji, "(Pt. 1) "
 LIST_SECTION = re.compile(  # "BONUS - ", "Patron Preview: ", "Spooktober Special II: ", "Magic May (Part I): "
-    r"^(?:\{?BONUS\}?(?: Episode)?|Patreon Pour[- ]?Up|The Worst and Forgotten|Side[- ]?Eye Side ?Quest"
+    r"^(?:\{?BONUS\}?!?(?: Episode)?|FIRF #\d+|Patreon Pour[- ]?Up|The Worst and Forgotten|Side[- ]?Eye Side ?Quest"
     r"|[\w’' ]*?(?:Special(?: [IVX]+)?|SPECTACULAR|Retrospective|Mass Debate|Patron Preview)"
     r"|[\w ]+\(Part [IVX\d]+\))\s*[-–—:]\s*", re.I)
 LIST_PARENS = re.compile(
@@ -58,7 +58,7 @@ LIST_THEME = re.compile(r"^.*?\bPt[ .,]*\d+\.?\s*[-–—:]\s*", re.I)
 LIST_GUEST = re.compile(
     r"\s*(?:[-–]\s*)?(?:\(\s*)?(?:Pat(?:re|er)on (?:pick|pour)|picked by|w/|with guests?\b|frm\b).*$"
     r"|\s*with\s+\S.*\b(?:from|of)\b.*$|\s+aka\s.*$", re.I)
-LIST_SPLIT = re.compile(r"\s+/\s+|\s+\+\s+|\s+plus\s+", re.I)
+LIST_SPLIT = re.compile(r"\s+/\s+|\s+\+\s+(?!Juliet)|\s+plus\s+", re.I)  # keep "Romeo + Juliet"
 # split on commas only for real lists: "A, B, and C" or "A, B, C" (not "What's Up, Doc?")
 LIST_COMMAS = re.compile(r",\s+(?:and\s+)?")
 # whole titles that are never about specific movies
@@ -66,19 +66,45 @@ LIST_SKIP = re.compile(
     r"perfect album|mix-?tape|spooktacular|interview (?:special|with a 3)|bachelorette|behind the reel"
     r"|tier list|cinematic showdown|behind the scenes|how we graded|announcement|interruption in service"
     r"|state of streaming|introducing |let's talk about|live at the|^short:|if we picked"
-    r"|podcasting 101|post show|preshow|pregame|clip show|round ?table|#podcast|comicpalooza x", re.I)
+    r"|podcasting 101|post show|preshow|pregame|clip show|round ?table|#podcast|comicpalooza x"
+    r"|embries|livestream|tuftwenty|patreon sampler|anniversary!|special announcement|firfies|goodbye \d{4}"
+    r"|double-feature", re.I)
 LIST_JUNK = re.compile(
     r"^(?:our |the |my |billy’s )?(?:all[- ]time |ultimate )?(?:top (?:\d|ten|five)"
     r"|(?:best|worst|favou?rite) (?:\d+ |five |ten )?(?:films|movies|of\b)|most (?:anticipated|underrated))"
     r"|oscar|golden globes|mixtape|perfect album|required viewing|what (?:else|have|do) we"
     r"|movie draft|trivia|interview|ranking|recap|wrap[- ]up|the one where|lists of|top 10s"
     r"|and more|^more\b|cinema releases|random flicks|^\d{4} movie|bumper|re-?watch|\bpromo\b"
-    r"|retrospective|year in review|\bintro\b|missing movies|side.?eye|top films", re.I)
+    r"|retrospective|year in review|\bintro\b|missing movies|side.?eye|top films|\btop \d+ (?:films|movies)\b"
+    r"|pod v pod|introduction$|catch up|breakdowns|celebration!|q&a episode", re.I)
 # trailing extras: "Fargo, Part 2", "No Country for Old Men, Part 1 of 2", "A Serious Man: Bonus Episode!",
 # "Barton Fink (Pt. 2)", "Tombstone PT1"
 _PART = r"(?:Part|Pt\.?)\s*(?:\d+|[IVX]+|One|Two|Three)(?: of \d+)?"
 LIST_EXTRA = re.compile(
     r"(?:,\s*" + _PART + r"|\s*\(" + _PART + r"\)|\s+(?-i:PT)\.?\s*\d*|:\s*Bonus Episode!?)$", re.I)
+
+
+# "Prefix: Movie" where the same prefix starts 3+ titles of a podcast is a series label, not part of
+# the movie title ("Christopher Nolan: Tenet (2020)") -- unless another podcast's titles also use
+# "Prefix:", which means it's a franchise ("Star Wars:", "Mission:", "X-Men:"); filled in by main()
+SERIES_PREFIX = re.compile(r"^([^:]{3,40}):\s+(?=\S)")
+COMMON_PREFIXES = {}
+
+
+def common_prefixes(episodes, podcasts, min_count=3):
+    counts = {}
+    for ep in episodes:
+        if ep["podcast"] in podcasts:
+            m = SERIES_PREFIX.match(ep["title"])
+            if m:
+                key = (ep["podcast"], m.group(1))
+                counts[key] = counts.get(key, 0) + 1
+    out = {}
+    for (pod, prefix), n in counts.items():
+        elsewhere = any(ep["podcast"] != pod and f"{prefix.lower()}:" in ep["title"].lower() for ep in episodes)
+        if n >= min_count and not elsewhere:
+            out.setdefault(pod, set()).add(prefix)
+    return out
 
 
 def parse_list_title(ep):
@@ -95,15 +121,22 @@ def parse_list_title(ep):
         ep["tag"] = m.group(0).strip(" -–—:")
         t = t[m.end():]
         t = LIST_LEAD.sub("", t)
+    m = SERIES_PREFIX.match(t)          # "Christopher Nolan: Tenet (2020)" when the prefix repeats
+    if m and m.group(1) in COMMON_PREFIXES.get(ep["podcast"], ()):
+        ep["tag"] = m.group(1)
+        t = t[m.end():]
     t = t.split(" | ")[0]               # "Movie (1991) PT 2 | Subtitle"
+    t = re.sub(r"\s+\(?(?:RT|CC)\)?\s*$", "", t)        # The Contrarians' "(RT)" / "(CC)" halves
+    t = re.sub(r"\s+Commentary Track$", "", t, flags=re.I)
     t = LIST_PARENS.sub("", t)
     # drop anything after a year unless another movie follows: "Congo (1995) PT 1 - Spoiler-Free Review"
-    t = re.sub(r"(\(\d{4}\))(?!\s*(?:/|\+|,|and\b)).*$", r"\1", t)
+    t = re.sub(r"(\(\d{4}\))(?!\s*(?:/|\+|,|&|and\b)).*$", r"\1", t)
     t = LIST_THEME.sub("", t)
     if " — " in t:                      # "What's In a Name — The Last Picture Show"
         t = t.rsplit(" — ", 1)[1]
+    t = re.sub(r"\s+-\s+((?:19|20)\d\d)$", r" (\1)", t)  # "The Running Man - 1987"
     segs = []
-    for seg in re.split(r"(?<=\(\d{4}\))\s+and\s+|" + LIST_SPLIT.pattern, t, flags=re.I):
+    for seg in re.split(r"(?<=\(\d{4}\))\s+(?:and|&)\s+|" + LIST_SPLIT.pattern, t, flags=re.I):
         if seg.count(",") >= 2 or ", and " in seg:
             segs.extend(LIST_COMMAS.split(seg))
         else:
@@ -213,6 +246,7 @@ def main():
     ov.setdefault("by_title", {})
     ov.setdefault("list_style", [])
     ov["list_style"] = set(ov["list_style"]) | detect_list_style(data["episodes"])
+    COMMON_PREFIXES.update(common_prefixes(data["episodes"], ov["list_style"]))
 
     # pass 1: raw movie titles per episode, and the explicit years seen for each title
     raw = []          # (episode index, base title, year or None)

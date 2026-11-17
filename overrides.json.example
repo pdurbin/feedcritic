@@ -62,7 +62,7 @@
       "Star Wars: Episode I - The Phantom Menace",
       "Star Wars: Episode II - Attack of the Clones",
       "Star Wars: Episode III - Revenge of the Sith",
-      "Star Wars",
+      "Star Wars (1977)",
       "The Empire Strikes Back",
       "Return of the Jedi"
     ],
@@ -109,7 +109,7 @@
       "Heat"
     ],
     "Star Wars: A New Hope": [
-      "Star Wars"
+      "Star Wars (1977)"
     ],
     "Ocean’s 11": [
       "Ocean’s Eleven"
@@ -338,6 +338,138 @@
     ],
     "The Movie Mass Debate: It (2017)": [
       "It (2017)"
+    ],
+    "Troy AND The Odyssey": [
+      "Troy",
+      "The Odyssey (2026)"
+    ],
+    "La Jetée & 12 Monkeys": [
+      "La Jetée",
+      "12 Monkeys"
+    ],
+    "Bladerunner: The Final Cut": [
+      "Blade Runner (1982)"
+    ],
+    "Romeo + Juliet": [
+      "William Shakespeare's Romeo + Juliet"
+    ],
+    "Romeo + Juliet (1996)": [
+      "William Shakespeare's Romeo + Juliet"
+    ],
+    "Friday The 13th 2009": [
+      "Friday the 13th (2009)"
+    ],
+    "Judge Dredd 1995": [
+      "Judge Dredd (1995)"
+    ],
+    "Peter Pan 2003": [
+      "Peter Pan (2003)"
+    ],
+    "Star Trek 2009": [
+      "Star Trek (2009)"
+    ],
+    "West Side Story 2021": [
+      "West Side Story (2021)"
+    ],
+    "Dawn of the Dead 1978": [
+      "Dawn of the Dead (1978)"
+    ],
+    "Inglourious Bast*rds (2009)": [
+      "Inglourious Basterds (2009)"
+    ],
+    "LOTR: The Fellowship Of The Ring": [
+      "The Lord of the Rings: The Fellowship of the Ring"
+    ],
+    "LOTR: The Two Towers": [
+      "The Lord of the Rings: The Two Towers"
+    ],
+    "LOTR: The Return Of The King": [
+      "The Lord of the Rings: The Return of the King"
+    ],
+    "Star Wars Episode VIII - The Last Jedi": [
+      "Star Wars: The Last Jedi"
+    ],
+    "Alien³": [
+      "Alien 3"
+    ],
+    "Star Wars Episode IV: A New Hope (1977)": [
+      "Star Wars (1977)"
+    ],
+    "Star Wars Episode V: The Empire Strikes Back (1980)": [
+      "The Empire Strikes Back (1980)"
+    ],
+    "Star Wars Episode VI: The Return of the Jedi (1983)": [
+      "Return of the Jedi (1983)"
+    ],
+    "Star Wars Episode VII: The Force Awakens (2015)": [
+      "Star Wars: The Force Awakens"
+    ],
+    "Star Wars Episode VIII: The Last Jedi (2017)": [
+      "Star Wars: The Last Jedi"
+    ],
+    "Star Wars Episode IX: The Rise of Skywalker (2019)": [
+      "Star Wars: The Rise of Skywalker (2019)"
+    ],
+    "George Lucas: THX 1138 (1971)": [
+      "THX 1138 (1971)"
+    ],
+    "Disney: The Nightmare Before Christmas": [
+      "The Nightmare Before Christmas"
+    ],
+    "Melody Time & The Adventures of Ichabod and Mr Toad": [
+      "Melody Time",
+      "The Adventures of Ichabod and Mr. Toad"
+    ],
+    "Make Mine Music & Fun and Fancy Free": [
+      "Make Mine Music",
+      "Fun and Fancy Free"
+    ],
+    "Salludos Amigos & Three Caballeros": [
+      "Saludos Amigos",
+      "The Three Caballeros"
+    ],
+    "Friday the 13th: Jason Goes to Hell (1993)": [
+      "Jason Goes to Hell: The Final Friday (1993)"
+    ],
+    "Friday the 13th The New Blood (1988)": [
+      "Friday the 13th Part VII: The New Blood"
+    ],
+    "Jason Takes Manhattan (1989)": [
+      "Friday the 13th Part VIII: Jason Takes Manhattan (1989)"
+    ],
+    "Jason Lives (1986)": [
+      "Friday the 13th Part VI: Jason Lives"
+    ],
+    "The Final Chapter (1984)": [
+      "Friday the 13th: The Final Chapter"
+    ],
+    "Friday the 13th Part I & II": [
+      "Friday the 13th (1980)",
+      "Friday the 13th Part 2"
+    ],
+    "Memento Analysis": [
+      "Memento (2000)"
+    ],
+    "Wes Anderson Introduction and Bottle Rocket (1995)": [
+      "Bottle Rocket (1995)"
+    ],
+    "The Dark Knight Rises (2013)": [
+      "The Dark Knight Rises (2012)"
+    ],
+    "mother!": [
+      "mother! (2017)"
+    ],
+    "Mother!": [
+      "mother! (2017)"
+    ],
+    "Star Wars Ep 2: Attack Of The Clones": [
+      "Star Wars: Episode II - Attack of the Clones (2002)"
+    ],
+    "Star Wars Episode 3: Revenge of the Sith": [
+      "Star Wars: Episode III - Revenge of the Sith (2005)"
+    ],
+    "Star Wars": [
+      "Star Wars (1977)"
     ]
   },
   "by_title": {
@@ -425,6 +557,21 @@
     ],
     "226: It": [
       "It (2017)"
+    ],
+    "After Hours: Rocky III (A Patreon Sampler)": [
+      "Rocky III"
+    ],
+    "Brawl In Cell Block 99 (+Announcement)": [
+      "Brawl in Cell Block 99 (2017)"
+    ],
+    "Family History, Pt. 1 – The Godfather, Part II": [
+      "The Godfather Part II (1974)"
+    ],
+    "Christopher Nolan Intro & Following": [
+      "Following (1998)"
+    ],
+    "Scream Series: Scream": [
+      "Scream (1996)"
     ]
   },
   "list_style": [
